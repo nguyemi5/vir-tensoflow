@@ -53,7 +53,6 @@ FROM ubuntu:16.04
 # configure environment
 ENV CONDA_DIR /opt/conda
 ENV PATH $CONDA_DIR/bin:$PATH
-ENV CONTAINER_USER lion
 ENV CONTAINER_UID 1000
 ENV INSTALLER Miniconda2-latest-Linux-x86_64.sh
 
