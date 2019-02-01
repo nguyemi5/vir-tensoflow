@@ -56,6 +56,8 @@ ENV PATH $CONDA_DIR/bin:$PATH
 ENV CONTAINER_UID 1000
 ENV INSTALLER Miniconda2-latest-Linux-x86_64.sh
 
+RUN apt-get update && apt-get install --no-install-recommends -y wget
+
 # create conda directory for lion user
 RUN mkdir -p /opt/conda
 
