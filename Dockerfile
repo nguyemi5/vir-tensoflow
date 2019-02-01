@@ -109,7 +109,7 @@ RUN apt-get install -y curl grep sed dpkg && \
     rm tini.deb && \
     apt-get clean
 
-RUN conda install -c -y conda-forge tensorflow-gpu=1.4.0
+RUN conda install -c conda-forge tensorflow-gpu=1.4.0
 
 # install packages
 RUN apt-get update && apt-get install -q -y \
