@@ -74,19 +74,40 @@ FROM ubuntu:16.04
 # /bin/bash $INSTALLER -f -b -p $CONDA_DIR && \
 # rm $INSTALLER
 
-RUN apt-get -qq update && apt-get -qq -y install curl bzip2 \
-    && curl -sSL https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
-    && bash /tmp/miniconda.sh -bfp /usr/local \
-    && rm -rf /tmp/miniconda.sh \
-    && conda install -y python=2 \
-    && conda update conda \
-    && apt-get -qq -y remove curl bzip2 \
-    && apt-get -qq -y autoremove \
-    && apt-get autoclean \
-    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
-    && conda clean --all --yes
+# RUN apt-get -qq update && apt-get -qq -y install curl bzip2 \
+#     && curl -sSL https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+#     && bash /tmp/miniconda.sh -bfp /usr/local \
+#     && rm -rf /tmp/miniconda.sh \
+#     && conda install -y python=2 \
+#     && conda update conda \
+#     && apt-get -qq -y remove curl bzip2 \
+#     && apt-get -qq -y autoremove \
+#     && apt-get autoclean \
+#     && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+#     && conda clean --all --yes
+# 
+# ENV PATH /opt/conda/bin:$PATH
 
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV PATH /opt/conda/bin:$PATH
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
+    git mercurial subversion
+
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda2-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh && \
+    /bin/bash ~/anaconda.sh -b -p /opt/conda && \
+    rm ~/anaconda.sh && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc
+
+RUN apt-get install -y curl grep sed dpkg && \
+    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+    dpkg -i tini.deb && \
+    rm tini.deb && \
+    apt-get clean
 
 RUN conda install -y tensorflow-gpu==1.4.0
 
