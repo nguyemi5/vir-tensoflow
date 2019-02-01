@@ -50,28 +50,43 @@ FROM ubuntu:16.04
 #             libcudnn6=$CUDNN_VERSION-1+cuda8.0 && \
 #     rm -rf /var/lib/apt/lists/*
 
-# configure environment
-ENV CONDA_DIR /opt/conda
-ENV PATH $CONDA_DIR/bin:$PATH
-ENV CONTAINER_UID 1000
-ENV INSTALLER Miniconda2-latest-Linux-x86_64.sh
 
-RUN apt-get update && apt-get install --no-install-recommends -y wget
+# # configure environment
+# RUN apt-get update && apt-get install -q -y wget
+# 
+# ENV CONDA_DIR /opt/conda
+# ENV PATH $CONDA_DIR/bin:$PATH
+# ENV CONTAINER_UID 1000
+# ENV INSTALLER Miniconda2-latest-Linux-x86_64.sh
+# 
+# # create conda directory for lion user
+# RUN mkdir -p /opt/conda
+# 
+# # install conda with python 2.7
+# RUN cd /tmp && \
+# mkdir -p $CONDA_DIR && \
+# wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh && \
+# echo $(wget --quiet -O - https://repo.continuum.io/miniconda/ \
+# | grep -A3 $INSTALLER \
+# | tail -n1 \
+# | cut -d\> -f2 \
+# | cut -d\< -f1 ) $INSTALLER | md5sum -c - && \
+# /bin/bash $INSTALLER -f -b -p $CONDA_DIR && \
+# rm $INSTALLER
 
-# create conda directory for lion user
-RUN mkdir -p /opt/conda
+RUN apt-get -qq update && apt-get -qq -y install curl bzip2 \
+    && curl -sSL https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -bfp /usr/local \
+    && rm -rf /tmp/miniconda.sh \
+    && conda install -y python=2 \
+    && conda update conda \
+    && apt-get -qq -y remove curl bzip2 \
+    && apt-get -qq -y autoremove \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+    && conda clean --all --yes
 
-# install conda with python 2.7
-RUN cd /tmp && \
-mkdir -p $CONDA_DIR && \
-wget --no-check-certificate https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh && \
-echo $(wget --quiet -O - https://repo.continuum.io/miniconda/ \
-| grep -A3 $INSTALLER \
-| tail -n1 \
-| cut -d\> -f2 \
-| cut -d\< -f1 ) $INSTALLER | md5sum -c - && \
-/bin/bash $INSTALLER -f -b -p $CONDA_DIR && \
-rm $INSTALLER
+ENV PATH /opt/conda/bin:$PATH
 
 RUN conda install -y tensorflow-gpu==1.4.0
 
