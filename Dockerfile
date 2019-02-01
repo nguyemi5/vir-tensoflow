@@ -99,5 +99,5 @@ RUN apt-get update && apt-get install -y \
 RUN python -m pip install h5py
 RUN python -m pip install scipy
 RUN python -m pip install parse
-RUN python -m pip install tensorflow-gpu=1.4
+RUN python -m pip install tensorflow-gpu==1.4.0
 RUN python -m pip install tqdm
