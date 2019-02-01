@@ -64,7 +64,7 @@ RUN mkdir -p /opt/conda
 # install conda with python 2.7
 RUN cd /tmp && \
 mkdir -p $CONDA_DIR && \
-wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh && \
+wget --no-check-certificate https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh && \
 echo $(wget --quiet -O - https://repo.continuum.io/miniconda/ \
 | grep -A3 $INSTALLER \
 | tail -n1 \
