@@ -96,8 +96,9 @@ RUN apt-get update && apt-get install -y \
     python-flufl.lock \
     python-opencv
     
-RUN python -m pip install h5py
-RUN python -m pip install scipy
-RUN python -m pip install parse
-RUN python -m pip install tensorflow-gpu==1.4.0
-RUN python -m pip install tqdm
+RUN python -m pip install \
+	tensorflow-gpu==1.4.0 \
+	h5py \
+	scipy \
+	parse \
+	tqdm
