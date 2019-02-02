@@ -157,7 +157,7 @@ RUN apt-get update && apt-get install -y \
     python-pip \
     python-flufl.lock \
     python-opencv \
-    python-numpy
+	libboost-all-dev 
     
 RUN python -m pip install \
 	h5py \
