@@ -158,6 +158,8 @@ RUN apt-get update && apt-get install -y \
     python-flufl.lock \
     python-opencv
     
+RUN conda install -y -c anaconda numpy
+    
 RUN python -m pip install \
 	h5py \
 	scipy \
