@@ -128,6 +128,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/
 RUN apt-get update && apt-get install --no-install-recommends -y \
     python-rosdep \
     python-rosinstall \
+    python-rospkg \
     python-vcstools \
     && rm -rf /var/lib/apt/lists/*
 
