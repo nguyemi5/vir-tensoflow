@@ -1,6 +1,11 @@
 FROM ubuntu:16.04
 LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 
+RUN add-apt-repository ppa:graphics-drivers/ppa && \
+	apt update && \
+	apt install -y nvidia-390 && \
+	apt install -y nvidia-cuda-toolkit
+
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https gnupg-curl && \
     rm -rf /var/lib/apt/lists/* && \
     NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
@@ -33,13 +38,15 @@ LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
 
-ENV PATH /usr/local/cuda/bin:${PATH}
+ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=8.0"
 
+#cudnn installation
 RUN echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
 ENV CUDNN_VERSION 6.0.21
@@ -49,9 +56,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
             libcudnn6=$CUDNN_VERSION-1+cuda8.0 && \
     rm -rf /var/lib/apt/lists/*
     
-RUN apt install -y nvidia-361-dev
-
-
 # # configure environment
 # RUN apt-get update && apt-get install -q -y wget
 # 
