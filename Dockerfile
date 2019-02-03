@@ -49,6 +49,8 @@ LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 RUN apt-get update && apt-get install -y --no-install-recommends \
             libcudnn6=$CUDNN_VERSION-1+cuda8.0 && \
     rm -rf /var/lib/apt/lists/*
+    
+RUN apt install -y nvidia-361-dev
 
 
 # # configure environment
